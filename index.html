@@ -1,0 +1,219 @@
+﻿<!doctype HTML>
+<meta charset = 'utf-8'>
+<html>
+  <head>
+
+    <link rel='stylesheet' href='http://nvd3.org/assets/css/nv.d3.css'>
+    
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js' type='text/javascript'></script>
+    <script src='http://d3js.org/d3.v3.min.js' type='text/javascript'></script>
+    <script src='http://timelyportfolio.github.io/rCharts_nvd3_tests/libraries/widgets/nvd3/js/nv.d3.min-new.js' type='text/javascript'></script>
+    <script src='http://nvd3.org/assets/lib/fisheye.js' type='text/javascript'></script>
+    
+ <style>
+  .rChart {
+    display: block;
+    margin-left: auto; 
+    margin-right: auto;
+    width: 600px;
+    height: 400px;
+  }  
+  </style>
+<div id = 'chart3' class = 'rChart nvd3'></div>
+<script type='text/javascript'>
+ $(document).ready(function(){
+      drawchart3()
+    });
+    function drawchart3(){  
+      var opts = {
+ "dom": "chart3",
+"width":    600,
+"height":    400,
+"x": "partei",
+"y": "value",
+"group": "group",
+"type": "multiBarChart",
+"id": "chart3" 
+},
+        data = [
+ {
+ "partei": "AfD",
+"group": "Insgesamt",
+"value":           28.6 
+},
+{
+ "partei": "CDU",
+"group": "Insgesamt",
+"value":           28.7 
+},
+{
+ "partei": "CSU",
+"group": "Insgesamt",
+"value":           18.4 
+},
+{
+ "partei": "Die Linke",
+"group": "Insgesamt",
+"value":             20 
+},
+{
+ "partei": "FDP",
+"group": "Insgesamt",
+"value":           37.3 
+},
+{
+ "partei": "Grüne",
+"group": "Insgesamt",
+"value":           34.6 
+},
+{
+ "partei": "Piraten",
+"group": "Insgesamt",
+"value":             25 
+},
+{
+ "partei": "SPD",
+"group": "Insgesamt",
+"value":           30.7 
+},
+{
+ "partei": "AfD",
+"group": "Gewählte Kandidaten",
+"value":           14.3 
+},
+{
+ "partei": "CDU",
+"group": "Gewählte Kandidaten",
+"value":           37.9 
+},
+{
+ "partei": "CSU",
+"group": "Gewählte Kandidaten",
+"value":              0 
+},
+{
+ "partei": "Die Linke",
+"group": "Gewählte Kandidaten",
+"value":           14.3 
+},
+{
+ "partei": "FDP",
+"group": "Gewählte Kandidaten",
+"value":              0 
+},
+{
+ "partei": "Grüne",
+"group": "Gewählte Kandidaten",
+"value":           36.4 
+},
+{
+ "partei": "Piraten",
+"group": "Gewählte Kandidaten",
+"value":              0 
+},
+{
+ "partei": "SPD",
+"group": "Gewählte Kandidaten",
+"value":           33.3 
+},
+{
+ "partei": "AfD",
+"group": "Nicht gewählte Kandidaten",
+"value":           33.3 
+},
+{
+ "partei": "CDU",
+"group": "Nicht gewählte Kandidaten",
+"value":             27 
+},
+{
+ "partei": "CSU",
+"group": "Nicht gewählte Kandidaten",
+"value":           21.2 
+},
+{
+ "partei": "Die Linke",
+"group": "Nicht gewählte Kandidaten",
+"value":           23.1 
+},
+{
+ "partei": "FDP",
+"group": "Nicht gewählte Kandidaten",
+"value":           38.4 
+},
+{
+ "partei": "Grüne",
+"group": "Nicht gewählte Kandidaten",
+"value":           33.3 
+},
+{
+ "partei": "Piraten",
+"group": "Nicht gewählte Kandidaten",
+"value":           27.3 
+},
+{
+ "partei": "SPD",
+"group": "Nicht gewählte Kandidaten",
+"value":           30.1 
+} 
+]
+  
+      if(!(opts.type==="pieChart" || opts.type==="sparklinePlus" || opts.type==="bulletChart")) {
+        var data = d3.nest()
+          .key(function(d){
+            //return opts.group === undefined ? 'main' : d[opts.group]
+            //instead of main would think a better default is opts.x
+            return opts.group === undefined ? opts.y : d[opts.group];
+          })
+          .entries(data);
+      }
+      
+      if (opts.disabled != undefined){
+        data.map(function(d, i){
+          d.disabled = opts.disabled[i]
+        })
+      }
+      
+      nv.addGraph(function() {
+        var chart = nv.models[opts.type]()
+          .width(opts.width)
+          .height(opts.height)
+          
+        if (opts.type != "bulletChart"){
+          chart
+            .x(function(d) { return d[opts.x] })
+            .y(function(d) { return d[opts.y] })
+        }
+          
+         
+        chart
+  .tooltipContent( function(key, x, y){
+         return '<h3>' + key + '</h3>' + 
+         '<p>' + y + ' Prozent der ' + x + '</p>'
+         } )
+  .color([ "lightblue", "lightgreen", "red" ])
+  .reduceXTicks(false)
+          
+        chart.xAxis
+  .axisLabel("Parteien")
+
+        
+        
+        chart.yAxis
+  .axisLabel("Prozentangaben")
+  .width(    62)
+      
+       d3.select("#" + opts.id)
+        .append('svg')
+        .datum(data)
+        .transition().duration(500)
+        .call(chart);
+
+       nv.utils.windowResize(chart.update);
+       return chart;
+      });
+    };
+</script>
+   <script></script>    
+  </body>
+</html>
